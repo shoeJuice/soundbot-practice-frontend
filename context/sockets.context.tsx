@@ -14,7 +14,7 @@ interface Context {
 
 // @ts-ignore
 const socket = io(SOCKET_URL, {
-    transports: ["polling"],
+    withCredentials: true,
 });
 
 const SocketContext = createContext<Context>({
