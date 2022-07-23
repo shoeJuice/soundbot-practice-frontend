@@ -32,6 +32,8 @@ const Home: NextPage = () => {
         name: "Test Sound",
         path: audioPath,
       });
+      // @ts-ignore
+      audioRef.current.muted = true;
     }
   };
 
@@ -41,6 +43,11 @@ const Home: NextPage = () => {
       //@ts-ignore
       audioRef.current.play();
       setAudioStatus("playing");
+    }
+    if (role == "DJ"){
+      console.log("We shouldn't play anything right now!");
+      // @ts-ignore
+      audioRef.current.pause();
     }
   });
 
