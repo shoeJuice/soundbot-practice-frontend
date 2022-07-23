@@ -64,7 +64,7 @@ const Home: NextPage = () => {
 
       <h1>Soundbot</h1>
       <div>
-        <h4>Role</h4>
+        <h4>Role: {role}</h4>
         <button onClick={() => setRole("client")}>Client</button>
         <button onClick={() => setRole("server")}>Server</button>
         <button onClick={() => handlePlaySound()}>Play Sound</button>
