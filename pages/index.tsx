@@ -18,7 +18,7 @@ const Home: NextPage = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const handlePlaySound = () => {
-    if (role == "server") {
+    if (role == "DJ") {
       socket.emit(EVENTS.CLIENT_EVENTS.PLAY_SOUND, {
         name: "Test Sound",
         path: audioPath,
@@ -27,16 +27,16 @@ const Home: NextPage = () => {
   };
 
   const handlePauseSound = () => {
-    if (role == "server"){
+    if (role == "DJ") {
       socket.emit(EVENTS.CLIENT_EVENTS.PAUSE_SOUND, {
         name: "Test Sound",
         path: audioPath,
       });
     }
-  }
+  };
 
   socket.on(EVENTS.SERVER_EVENTS.PLAY_SOUND, () => {
-    if (role == "client") {
+    if (role == "Audience") {
       console.log("We should be playing a sound now!");
       //@ts-ignore
       audioRef.current.play();
@@ -45,7 +45,7 @@ const Home: NextPage = () => {
   });
 
   socket.on(EVENTS.SERVER_EVENTS.PAUSE_SOUND, () => {
-    if (role == "client") {
+    if (role == "Audience") {
       console.log("We should be pausing a sound now!");
       //@ts-ignore
       audioRef.current.pause();
@@ -53,7 +53,6 @@ const Home: NextPage = () => {
     }
   });
 
-  
   return (
     <div className={styles.container}>
       <Head>
@@ -65,12 +64,17 @@ const Home: NextPage = () => {
       <h1>Soundbot</h1>
       <div>
         <h4>Role: {role}</h4>
-        <button onClick={() => setRole("client")}>Client</button>
-        <button onClick={() => setRole("server")}>Server</button>
-        <button onClick={() => handlePlaySound()}>Play Sound</button>
-        <button onClick={() => handlePauseSound()}>Pause Sound</button>
+        <button onClick={() => setRole("Audience")}>Audience</button>
+        <button onClick={() => setRole("DJ")}>DJ</button>
+
+        { role == "DJ" && (
+          <>
+            <button onClick={() => handlePlaySound()}>Play Sound</button>
+            <button onClick={() => handlePauseSound()}>Pause Sound</button>
+          </> )
+        }
       </div>
-      
+
       <audio id="audioPlayer" ref={audioRef} src={audioPath}></audio>
     </div>
   );
