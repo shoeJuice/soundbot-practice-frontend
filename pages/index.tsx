@@ -40,9 +40,18 @@ const Home: NextPage = () => {
   socket.on(EVENTS.SERVER_EVENTS.PLAY_SOUND, () => {
     if (role == "Audience") {
       console.log("We should be playing a sound now!");
+
+      // @ts-ignore
+      audioRef.current.oncanplaythrough = () => {
+        // @ts-ignore
+        audioRef.current.play();
+        setAudioStatus("playing");
+      }
+
       //@ts-ignore
-      audioRef.current.play();
-      setAudioStatus("playing");
+      audioRef.current.src = audioPath;
+      //@ts-ignore
+      audioRef.current.load();
     }
     if (role == "DJ"){
       console.log("We shouldn't play anything right now!");
@@ -82,7 +91,7 @@ const Home: NextPage = () => {
         }
       </div>
 
-      <audio id="audioPlayer" ref={audioRef} src={audioPath}></audio>
+      <audio id="audioPlayer" ref={audioRef}></audio>
     </div>
   );
 };
