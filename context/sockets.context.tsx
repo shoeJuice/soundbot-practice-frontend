@@ -12,6 +12,7 @@ interface Context {
   clientID?: string;
 }
 
+// @ts-ignore
 const socket = io(SOCKET_URL);
 
 const SocketContext = createContext<Context>({
