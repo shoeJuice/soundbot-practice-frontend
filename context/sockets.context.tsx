@@ -13,7 +13,9 @@ interface Context {
 }
 
 // @ts-ignore
-const socket = io(SOCKET_URL);
+const socket = io(SOCKET_URL, {
+    transports: ["polling"],
+});
 
 const SocketContext = createContext<Context>({
   socket,
