@@ -30,23 +30,24 @@ function SocketProvider(props: any) {
 
   useEffect(() => {
     socket.emit(EVENTS.CLIENT_EVENTS.INITIALIZATION)
+    socket.on(EVENTS.SERVER_EVENTS.COMPLETE_INITALIZATION, (userID) => {
+        if( typeof window != "undefined"){
+            if( localStorage.getItem("clientID") == null){
+                localStorage.setItem("clientID", userID)
+            }
+            const clientID = localStorage.getItem("clientID")
+            // @ts-ignore
+            setClientID(clientID)
+        }
+        socket.emit(EVENTS.CLIENT_EVENTS.INITIALIZATION_COMPLETE, clientID);
+      })
   }, [])
 
   useEffect(() => {
     console.log("Role:", role)
   }, [role])
 
-  socket.on(EVENTS.SERVER_EVENTS.COMPLETE_INITALIZATION, (userID) => {
-    if( typeof window != "undefined"){
-        if( localStorage.getItem("clientID") == null){
-            localStorage.setItem("clientID", userID)
-        }
-        const clientID = localStorage.getItem("clientID")
-        // @ts-ignore
-        setClientID(clientID)
-    }
-    socket.emit(EVENTS.CLIENT_EVENTS.INITIALIZATION_COMPLETE, clientID);
-  })
+  
 
   return (
     <SocketContext.Provider value={{ socket, setRole, role, setSongTitle, clientID }}>
