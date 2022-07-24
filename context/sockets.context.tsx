@@ -37,7 +37,14 @@ function SocketProvider(props: any) {
   }, [role])
 
   socket.on(EVENTS.SERVER_EVENTS.COMPLETE_INITALIZATION, (userID) => {
-    setClientID(userID);
+    if( typeof window != "undefined"){
+        if( localStorage.getItem("clientID") == null){
+            localStorage.setItem("clientID", userID)
+        }
+        const clientID = localStorage.getItem("clientID")
+        // @ts-ignore
+        setClientID(clientID)
+    }
     socket.emit(EVENTS.CLIENT_EVENTS.INITIALIZATION_COMPLETE, clientID);
   })
 

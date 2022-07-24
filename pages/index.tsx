@@ -13,7 +13,7 @@ const Home: NextPage = () => {
     "./AutumnWhatMyOgToldMe.mp3"
   );
   const [audioStatus, setAudioStatus] = useState<string>("paused");
-  const currentSong = new Audio(audioPath);
+  const currentSong = new Audio("");
   // @ts-ignore
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -38,6 +38,7 @@ const Home: NextPage = () => {
 
   socket.on(EVENTS.SERVER_EVENTS.PLAY_SOUND, () => {
     if (role == "Audience") {
+      currentSong.src = audioPath
       currentSong.load();
       currentSong.play();
     }
@@ -67,7 +68,9 @@ const Home: NextPage = () => {
       <div>
         <h4>Role: {role}</h4>
         <button onClick={() => setRole("Audience")}>Audience</button>
-        <button onClick={() => setRole("DJ")}>DJ</button>
+        <button onClick={() => {
+          
+          setRole("DJ")}}>DJ</button>
 
         { role == "DJ" && (
           <>
