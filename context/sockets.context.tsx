@@ -14,7 +14,7 @@ interface Context {
 
 // @ts-ignore
 const socket = io(SOCKET_URL, {
-    withCredentials: true,
+  withCredentials: true,
 });
 
 const SocketContext = createContext<Context>({
@@ -29,28 +29,32 @@ function SocketProvider(props: any) {
   const [songTitle, setSongTitle] = useState<string>("");
 
   useEffect(() => {
-    socket.emit(EVENTS.CLIENT_EVENTS.INITIALIZATION)
-    socket.on(EVENTS.SERVER_EVENTS.COMPLETE_INITALIZATION, (userID) => {
-        if( typeof window != "undefined"){
-            if( localStorage.getItem("clientID") == null){
-                localStorage.setItem("clientID", userID)
-            }
-            const clientID = localStorage.getItem("clientID")
-            // @ts-ignore
-            setClientID(clientID)
-        }
-        socket.emit(EVENTS.CLIENT_EVENTS.INITIALIZATION_COMPLETE, clientID);
-      })
-  }, [])
+    socket.emit(EVENTS.CLIENT_EVENTS.INITIALIZATION);
+  }, []);
 
   useEffect(() => {
-    console.log("Role:", role)
-  }, [role])
+    console.log("Role:", role);
+  }, [role]);
 
-  
+  useEffect(() => {
+    socket.emit(EVENTS.CLIENT_EVENTS.INITIALIZATION_COMPLETE, clientID);
+  }, [clientID]);
+
+  socket.on(EVENTS.SERVER_EVENTS.COMPLETE_INITALIZATION, (userID) => {
+    if (typeof window != "undefined") {
+      if (!localStorage.getItem("clientID")) {
+        localStorage.setItem("clientID", userID);
+      }
+      const clientID = localStorage.getItem("clientID");
+      // @ts-ignore
+      setClientID(clientID);
+    }
+  });
 
   return (
-    <SocketContext.Provider value={{ socket, setRole, role, setSongTitle, clientID }}>
+    <SocketContext.Provider
+      value={{ socket, setRole, role, setSongTitle, clientID }}
+    >
       {props.children}
     </SocketContext.Provider>
   );
