@@ -13,7 +13,7 @@ const Home: NextPage = () => {
     "./AutumnWhatMyOgToldMe.mp3"
   );
   const [audioStatus, setAudioStatus] = useState<string>("paused");
-
+  const currentSong = new Audio(audioPath);
   // @ts-ignore
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -32,40 +32,26 @@ const Home: NextPage = () => {
         name: "Test Sound",
         path: audioPath,
       });
-      // @ts-ignore
-      audioRef.current.muted = true;
+      // @ts-ignore 
     }
   };
 
   socket.on(EVENTS.SERVER_EVENTS.PLAY_SOUND, () => {
     if (role == "Audience") {
-      console.log("We should be playing a sound now!");
-
-      // @ts-ignore
-      audioRef.current.oncanplaythrough = () => {
-        // @ts-ignore
-        audioRef.current.play();
-        setAudioStatus("playing");
-      }
-
-      //@ts-ignore
-      audioRef.current.src = audioPath;
-      //@ts-ignore
-      audioRef.current.load();
+      currentSong.load();
+      currentSong.play();
     }
     if (role == "DJ"){
-      console.log("We shouldn't play anything right now!");
-      // @ts-ignore
-      audioRef.current.pause();
+      currentSong.src = ""
+      currentSong.load();
     }
   });
 
   socket.on(EVENTS.SERVER_EVENTS.PAUSE_SOUND, () => {
     if (role == "Audience") {
-      console.log("We should be pausing a sound now!");
-      //@ts-ignore
-      audioRef.current.pause();
-      setAudioStatus("paused");
+      currentSong.oncanplaythrough = () => {
+        currentSong.pause();
+      }
     }
   });
 
@@ -90,8 +76,6 @@ const Home: NextPage = () => {
           </> )
         }
       </div>
-
-      <audio id="audioPlayer" ref={audioRef}></audio>
     </div>
   );
 };
