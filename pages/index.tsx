@@ -66,9 +66,7 @@ const Home: NextPage = () => {
 
   socket.on(EVENTS.SERVER_EVENTS.PAUSE_SOUND, () => {
     if (role == "Audience" && musicPlayers.current !== undefined) {
-      musicPlayers.current.oncanplaythrough = () => {
-        musicPlayers.current?.pause();
-      };
+      musicPlayers.current?.pause();
     }
   });
 
