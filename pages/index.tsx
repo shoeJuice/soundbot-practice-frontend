@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
 import { useEffect, useState, useRef } from "react";
+import { showNotification, cleanNotificationsQueue } from "@mantine/notifications";
 import Head from "next/head";
-import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { useSocket } from "../context/sockets.context";
 import * as EVENTS from "../config/socketEvents";
-import iconPath from "./favicon.svg";
+
 
 const Home: NextPage = () => {
   const { socket, role, setRole, clientID } = useSocket();
@@ -56,6 +56,12 @@ const Home: NextPage = () => {
 
   socket.on(EVENTS.SERVER_EVENTS.PLAY_SOUND, () => {
     if (role == "Audience") {
+      showNotification({
+        title: 'Song Started',
+        message: 'The song has started',
+        autoClose: 3500,
+        onClose: () => cleanNotificationsQueue(),
+      })
       musicPlayers.current?.load();
       musicPlayers.current?.play();
     }
@@ -66,6 +72,12 @@ const Home: NextPage = () => {
 
   socket.on(EVENTS.SERVER_EVENTS.PAUSE_SOUND, () => {
     if (role == "Audience" && musicPlayers.current !== undefined) {
+      showNotification({
+        title: 'Song Paused',
+        message: 'The song has paused',
+        autoClose: 3500,
+        onClose: () => cleanNotificationsQueue(),
+      })
       musicPlayers.current?.pause();
     }
   });
