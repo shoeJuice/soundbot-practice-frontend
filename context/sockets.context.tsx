@@ -29,7 +29,8 @@ function SocketProvider(props: any) {
   const [songTitle, setSongTitle] = useState<string>("");
 
   useEffect(() => {
-    socket.emit(EVENTS.CLIENT_EVENTS.INITIALIZATION);
+    const socketID = socket.id;
+    socket.emit(EVENTS.CLIENT_EVENTS.INITIALIZATION, socketID);
   }, []);
 
   useEffect(() => {
