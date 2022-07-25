@@ -13,45 +13,49 @@ const Home: NextPage = () => {
     "./AutumnWhatMyOgToldMe.mp3"
   );
   const [audioStatus, setAudioStatus] = useState<string>("paused");
-  const currentSong = new Audio("");
+  
+  const musicPlayers = useRef<HTMLAudioElement | undefined>(
+    typeof Audio !== "undefined" ? new Audio("") : undefined
+  );
   // @ts-ignore
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  useEffect(() => {
+    if (role == "DJ"){
+      setAudioPath("");
+    }
+    if (role == "Audience"){
+      setAudioPath("./AutumnWhatMyOgToldMe.mp3");
+    }
+  }, [role]);
+
   const handlePlaySound = () => {
     if (role == "DJ") {
-      socket.emit(EVENTS.CLIENT_EVENTS.PLAY_SOUND, {
-        name: "Test Sound",
-        path: audioPath,
-      });
+      socket.emit(EVENTS.CLIENT_EVENTS.PLAY_SOUND);
     }
   };
 
   const handlePauseSound = () => {
     if (role == "DJ") {
-      socket.emit(EVENTS.CLIENT_EVENTS.PAUSE_SOUND, {
-        name: "Test Sound",
-        path: audioPath,
-      });
+      socket.emit(EVENTS.CLIENT_EVENTS.PAUSE_SOUND);
       // @ts-ignore 
     }
   };
 
   socket.on(EVENTS.SERVER_EVENTS.PLAY_SOUND, () => {
     if (role == "Audience") {
-      currentSong.src = audioPath
-      currentSong.load();
-      currentSong.play();
+      musicPlayers.current?.load();
+      musicPlayers.current?.play();
     }
     if (role == "DJ"){
-      currentSong.src = ""
-      currentSong.load();
+      musicPlayers.current?.load();
     }
   });
 
   socket.on(EVENTS.SERVER_EVENTS.PAUSE_SOUND, () => {
-    if (role == "Audience") {
-      currentSong.oncanplaythrough = () => {
-        currentSong.pause();
+    if (role == "Audience" && musicPlayers.current !== undefined) {
+      musicPlayers.current.oncanplaythrough = () => {
+        musicPlayers.current?.pause();
       }
     }
   });
@@ -69,7 +73,7 @@ const Home: NextPage = () => {
         <h4>Role: {role}</h4>
         <button onClick={() => setRole("Audience")}>Audience</button>
         <button onClick={() => {
-          
+
           setRole("DJ")}}>DJ</button>
 
         { role == "DJ" && (
@@ -78,6 +82,7 @@ const Home: NextPage = () => {
             <button onClick={() => handlePauseSound()}>Pause Sound</button>
           </> )
         }
+        <audio ref={audioRef} src={audioPath} />
       </div>
     </div>
   );

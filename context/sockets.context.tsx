@@ -37,11 +37,13 @@ function SocketProvider(props: any) {
   }, [role]);
 
   useEffect(() => {
+    
     socket.emit(EVENTS.CLIENT_EVENTS.INITIALIZATION_COMPLETE, clientID);
   }, [clientID]);
 
   socket.on(EVENTS.SERVER_EVENTS.COMPLETE_INITALIZATION, (userID) => {
     if (typeof window != "undefined") {
+        console.log("ClientID received from server:", userID);
       if (!localStorage.getItem("clientID")) {
         localStorage.setItem("clientID", userID);
       }
