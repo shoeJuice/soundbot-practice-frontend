@@ -38,7 +38,6 @@ function SocketProvider(props: any) {
   }, [role]);
 
   useEffect(() => {
-    
     socket.emit(EVENTS.CLIENT_EVENTS.INITIALIZATION_COMPLETE, clientID);
   }, [clientID]);
 
