@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { useEffect, useState, useRef } from "react";
-import { showNotification, cleanNotificationsQueue } from "@mantine/notifications";
+import { showNotification, cleanNotificationsQueue, cleanNotifications } from "@mantine/notifications";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useSocket } from "../context/sockets.context";
@@ -60,7 +60,7 @@ const Home: NextPage = () => {
         title: 'Song Started',
         message: 'The song has started',
         autoClose: 3500,
-        onClose: () => cleanNotificationsQueue(),
+        onClose: () => cleanNotifications(),
       })
       musicPlayers.current?.load();
       musicPlayers.current?.play();
@@ -76,7 +76,7 @@ const Home: NextPage = () => {
         title: 'Song Paused',
         message: 'The song has paused',
         autoClose: 3500,
-        onClose: () => cleanNotificationsQueue(),
+        onClose: () => cleanNotifications(),
       })
       musicPlayers.current?.pause();
     }
