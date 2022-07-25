@@ -13,7 +13,7 @@ const Home: NextPage = () => {
     "./AutumnWhatMyOgToldMe.mp3"
   );
   const [audioStatus, setAudioStatus] = useState<string>("paused");
-  
+
   const musicPlayers = useRef<HTMLAudioElement | undefined>(
     typeof Audio !== "undefined" ? new Audio("") : undefined
   );
@@ -21,11 +21,22 @@ const Home: NextPage = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    if (role == "DJ"){
+    if (musicPlayers.current) {
+      musicPlayers.current.onpause = () => {
+        setAudioStatus("paused");
+      };
+
+      musicPlayers.current.onplay = () => {
+        setAudioStatus("playing");
+      };
+    }
+  }, []);
+  useEffect(() => {
+    if (role == "DJ") {
       setAudioPath("");
     }
-    if (role == "Audience"){
-      setAudioPath("./AutumnWhatMyOgToldMe.mp3");
+    if (role == "Audience" && musicPlayers.current) {
+      musicPlayers.current.src = audioPath;
     }
   }, [role]);
 
@@ -38,7 +49,7 @@ const Home: NextPage = () => {
   const handlePauseSound = () => {
     if (role == "DJ") {
       socket.emit(EVENTS.CLIENT_EVENTS.PAUSE_SOUND);
-      // @ts-ignore 
+      // @ts-ignore
     }
   };
 
@@ -47,7 +58,7 @@ const Home: NextPage = () => {
       musicPlayers.current?.load();
       musicPlayers.current?.play();
     }
-    if (role == "DJ"){
+    if (role == "DJ") {
       musicPlayers.current?.load();
     }
   });
@@ -56,7 +67,7 @@ const Home: NextPage = () => {
     if (role == "Audience" && musicPlayers.current !== undefined) {
       musicPlayers.current.oncanplaythrough = () => {
         musicPlayers.current?.pause();
-      }
+      };
     }
   });
 
@@ -72,17 +83,20 @@ const Home: NextPage = () => {
       <div>
         <h4>Role: {role}</h4>
         <button onClick={() => setRole("Audience")}>Audience</button>
-        <button onClick={() => {
+        <button
+          onClick={() => {
+            setRole("DJ");
+          }}
+        >
+          DJ
+        </button>
 
-          setRole("DJ")}}>DJ</button>
-
-        { role == "DJ" && (
+        {role == "DJ" && (
           <>
             <button onClick={() => handlePlaySound()}>Play Sound</button>
             <button onClick={() => handlePauseSound()}>Pause Sound</button>
-          </> )
-        }
-        <audio ref={audioRef} src={audioPath} />
+          </>
+        )}
       </div>
     </div>
   );
