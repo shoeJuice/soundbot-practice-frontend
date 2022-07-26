@@ -24,13 +24,26 @@ const Home: NextPage = () => {
     if (musicPlayers.current) {
       musicPlayers.current.onpause = () => {
         setAudioStatus("paused");
+        showNotification({
+          title: 'Song Started',
+          message: 'The song has paused',
+          autoClose: 3500,
+          onClose: () => cleanNotifications(),
+        })
       };
 
       musicPlayers.current.onplay = () => {
         setAudioStatus("playing");
+        showNotification({
+          title: 'Song Started',
+          message: 'The song has started',
+          autoClose: 3500,
+          onClose: () => cleanNotifications(),
+        })
       };
     }
   }, []);
+
   useEffect(() => {
     if (role == "DJ" && musicPlayers.current) {
       setAudioPath("");
@@ -56,12 +69,6 @@ const Home: NextPage = () => {
 
   socket.on(EVENTS.SERVER_EVENTS.PLAY_SOUND, () => {
     if (role == "Audience") {
-      showNotification({
-        title: 'Song Started',
-        message: 'The song has started',
-        autoClose: 3500,
-        onClose: () => cleanNotifications(),
-      })
       musicPlayers.current?.load();
       musicPlayers.current?.play();
     }
