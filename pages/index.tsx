@@ -79,12 +79,6 @@ const Home: NextPage = () => {
 
   socket.on(EVENTS.SERVER_EVENTS.PAUSE_SOUND, () => {
     if (role == "Audience" && musicPlayers.current !== undefined) {
-      showNotification({
-        title: 'Song Paused',
-        message: 'The song has paused',
-        autoClose: 3500,
-        onClose: () => cleanNotifications(),
-      })
       musicPlayers.current?.pause();
     }
   });
