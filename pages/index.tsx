@@ -1,11 +1,14 @@
 import type { NextPage } from "next";
 import { useEffect, useState, useRef } from "react";
-import { showNotification, cleanNotificationsQueue, cleanNotifications } from "@mantine/notifications";
+import {
+  showNotification,
+  cleanNotificationsQueue,
+  cleanNotifications,
+} from "@mantine/notifications";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useSocket } from "../context/sockets.context";
 import * as EVENTS from "../config/socketEvents";
-
 
 const Home: NextPage = () => {
   const { socket, role, setRole, clientID } = useSocket();
@@ -17,32 +20,28 @@ const Home: NextPage = () => {
   const musicPlayers = useRef<HTMLAudioElement | undefined>(
     typeof Audio !== "undefined" ? new Audio("") : undefined
   );
-  // @ts-ignore
-  const audioRef = useRef<HTMLAudioElement>(null);
 
-  useEffect(() => {
-    if (musicPlayers.current) {
-      musicPlayers.current.onpause = () => {
-        setAudioStatus("paused");
-        showNotification({
-          title: 'Song Started',
-          message: 'The song has paused',
-          autoClose: 3500,
-          onClose: () => cleanNotifications(),
-        })
-      };
+  if (musicPlayers.current) {
+    musicPlayers.current.onpause = () => {
+      setAudioStatus("paused");
+      showNotification({
+        title: "Song Started",
+        message: "The song has paused",
+        autoClose: 3500,
+        onClose: () => cleanNotifications(),
+      });
+    };
 
-      musicPlayers.current.onplay = () => {
-        setAudioStatus("playing");
-        showNotification({
-          title: 'Song Started',
-          message: 'The song has started',
-          autoClose: 3500,
-          onClose: () => cleanNotifications(),
-        })
-      };
-    }
-  }, []);
+    musicPlayers.current.onplay = () => {
+      setAudioStatus("playing");
+      showNotification({
+        title: "Song Started",
+        message: "The song has started",
+        autoClose: 3500,
+        onClose: () => cleanNotifications(),
+      });
+    };
+  }
 
   useEffect(() => {
     if (role == "DJ" && musicPlayers.current) {
